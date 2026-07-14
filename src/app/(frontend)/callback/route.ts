@@ -9,17 +9,17 @@ export async function GET(req: Request) {
   const error = url.searchParams.get('error');
   const state = url.searchParams.get('state');
 
+  const AUTH_URL = process.env.CODECHOVUI_AUTH_URL || 'https://auth.codechovui.dev';
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3003';
+
   if (error) {
     console.error('OAuth Error:', error);
-    return NextResponse.redirect(new URL(`/?error=${error}`, req.url));
+    return NextResponse.redirect(`${APP_URL}/?error=${error}`);
   }
 
   if (!code) {
-    return NextResponse.redirect(new URL('/', req.url));
+    return NextResponse.redirect(`${APP_URL}/`);
   }
-
-  const AUTH_URL = process.env.CODECHOVUI_AUTH_URL || 'https://auth.codechovui.dev';
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3003';
 
   try {
     const tokenRes = await fetch(`${AUTH_URL}/oauth/token`, {
@@ -53,9 +53,9 @@ export async function GET(req: Request) {
     });
 
     // Redirect back to original page or home
-    return NextResponse.redirect(new URL(state || '/', req.url));
+    return NextResponse.redirect(`${APP_URL}${state || '/'}`);
   } catch (err: any) {
     console.error('OAuth token exchange error:', err);
-    return NextResponse.redirect(new URL('/?error=auth_failed', req.url));
+    return NextResponse.redirect(`${APP_URL}/?error=auth_failed`);
   }
 }
