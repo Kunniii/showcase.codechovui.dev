@@ -14,18 +14,39 @@ export async function GET(req: Request) {
   console.log('[LOGOUT] APP_URL:', APP_URL);
   
   const redirectUrl = referer && referer.startsWith(APP_URL) ? referer : `${APP_URL}/`;
-  console.log('[LOGOUT] Redirecting to:', redirectUrl);
   
-  const response = NextResponse.redirect(redirectUrl);
+  // Return a 200 OK HTML page that immediately redirects using meta refresh.
+  // This bypasses any Next.js/Browser quirks with 307 redirects ignoring Set-Cookie headers.
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta http-equiv="refresh" content="0; url=${redirectUrl}">
+        <title>Logging out...</title>
+      </head>
+      <body>
+        <p>Đang đăng xuất...</p>
+        <script>
+          console.log('[CLIENT] Logout page rendered. Redirecting to:', '${redirectUrl}');
+          window.location.href = '${redirectUrl}';
+        </script>
+      </body>
+    </html>
+  `;
+
+  const response = new NextResponse(html, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+    }
+  });
   
-  // Delete the cookie using Next.js native delete method on the response object
+  // Delete the cookie
   response.cookies.delete('auth_token');
-  console.log('[LOGOUT] Added response.cookies.delete(auth_token)');
-  
-  // Prevent browser from caching this redirect, ensuring the cookie is always deleted
-  response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  response.headers.set('Pragma', 'no-cache');
-  response.headers.set('Expires', '0');
+  console.log('[LOGOUT] Emitting 200 OK with meta refresh and Set-Cookie for deletion');
   
   return response;
 }
