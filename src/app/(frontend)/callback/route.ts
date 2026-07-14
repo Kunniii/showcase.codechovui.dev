@@ -43,18 +43,18 @@ export async function GET(req: Request) {
       throw new Error(tokenData.error || 'Failed to fetch access token');
     }
 
-    // Set cookie on the response
-    const cookieStore = await cookies();
-    cookieStore.set('auth_token', tokenData.access_token, {
+    // Redirect back to original page or home
+    const response = NextResponse.redirect(`${APP_URL}${state || '/'}`);
+    
+    // Set cookie directly on the response object
+    response.cookies.set('auth_token', tokenData.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
       maxAge: tokenData.expires_in || 7200,
     });
-
-    // Redirect back to original page or home
-    const response = NextResponse.redirect(`${APP_URL}${state || '/'}`);
+    
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
