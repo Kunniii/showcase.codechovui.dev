@@ -44,9 +44,15 @@ export async function GET(req: Request) {
     }
   });
   
-  // Delete the cookie
-  response.cookies.delete('auth_token');
-  console.log('[LOGOUT] Emitting 200 OK with meta refresh and Set-Cookie for deletion');
+  // Delete the cookie across all possible domains with the exact Secure flag
+  const secureFlag = process.env.NODE_ENV === 'production' ? 'Secure;' : '';
+  const baseCookie = `auth_token=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=lax; ${secureFlag}`;
+  
+  response.headers.append('Set-Cookie', baseCookie);
+  response.headers.append('Set-Cookie', `${baseCookie} Domain=showcase.codechovui.dev;`);
+  response.headers.append('Set-Cookie', `${baseCookie} Domain=.codechovui.dev;`);
+  
+  console.log('[LOGOUT] Emitting 200 OK with meta refresh and multiple Set-Cookie headers for deletion');
   
   return response;
 }
