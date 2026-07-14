@@ -4,20 +4,23 @@ import { cookies } from 'next/headers';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
+  console.log('[LOGOUT] Route hit. URL:', req.url);
+  console.log('[LOGOUT] Cookies received from browser:', req.headers.get('cookie'));
+  
   const referer = req.headers.get('referer');
+  console.log('[LOGOUT] Referer:', referer);
+  
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3003';
+  console.log('[LOGOUT] APP_URL:', APP_URL);
   
   const redirectUrl = referer && referer.startsWith(APP_URL) ? referer : `${APP_URL}/`;
+  console.log('[LOGOUT] Redirecting to:', redirectUrl);
+  
   const response = NextResponse.redirect(redirectUrl);
   
-  // Set the cookie directly on the response object to ensure it gets propagated
-  response.cookies.set('auth_token', '', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 0,
-  });
+  // Delete the cookie using Next.js native delete method on the response object
+  response.cookies.delete('auth_token');
+  console.log('[LOGOUT] Added response.cookies.delete(auth_token)');
   
   // Prevent browser from caching this redirect, ensuring the cookie is always deleted
   response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
