@@ -5,10 +5,19 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   const referer = req.headers.get('referer');
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3003';
   
   const cookieStore = await cookies();
-  // Next.js requires setting the cookie with a past expiration date to delete it
-  cookieStore.delete('auth_token');
+  cookieStore.set('auth_token', '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 0, // Immediately expire
+  });
 
-  return NextResponse.redirect(new URL(referer || '/', req.url));
+  if (referer && referer.startsWith(APP_URL)) {
+    return NextResponse.redirect(referer);
+  }
+  return NextResponse.redirect(`${APP_URL}/`);
 }
