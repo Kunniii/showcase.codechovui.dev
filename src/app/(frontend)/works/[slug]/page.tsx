@@ -127,9 +127,9 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
               if (!gImageUrl) return null
 
               // Random rotation between 5 and 15 degrees, randomly positive or negative
-              const randDegree = (Math.random() * 10 + 5).toFixed(2)
+              const randDegree = Math.random() * 10 + 5
               const sign = Math.random() > 0.5 ? 1 : -1
-              const deg = randDegree * sign
+              const deg = (randDegree * sign).toFixed(2)
               
               return (
                 <div 
