@@ -43,7 +43,8 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
   if (token) {
     try {
       const authUrl = process.env.CODECHOVUI_AUTH_URL || 'https://auth.codechovui.dev'
-      const userRes = await fetch(`${authUrl}/api/me`, {
+      const authInternalUrl = process.env.CODECHOVUI_AUTH_INTERNAL_URL || authUrl
+      const userRes = await fetch(`${authInternalUrl}/api/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
         },

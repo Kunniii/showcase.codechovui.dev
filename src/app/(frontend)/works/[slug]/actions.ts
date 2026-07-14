@@ -30,7 +30,8 @@ export async function submitComment(prevState: FormState, formData: FormData): P
   // 2. Validate token and get user profile by calling auth.codechovui.dev
   try {
     const authUrl = process.env.CODECHOVUI_AUTH_URL || 'https://auth.codechovui.dev';
-    const response = await fetch(`${authUrl}/api/me`, {
+    const authInternalUrl = process.env.CODECHOVUI_AUTH_INTERNAL_URL || authUrl;
+    const response = await fetch(`${authInternalUrl}/api/me`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }

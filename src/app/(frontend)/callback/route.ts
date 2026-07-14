@@ -10,6 +10,7 @@ export async function GET(req: Request) {
   const state = url.searchParams.get('state');
 
   const AUTH_URL = process.env.CODECHOVUI_AUTH_URL || 'https://auth.codechovui.dev';
+  const AUTH_INTERNAL_URL = process.env.CODECHOVUI_AUTH_INTERNAL_URL || AUTH_URL;
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3003';
 
   if (error) {
@@ -22,7 +23,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    const tokenRes = await fetch(`${AUTH_URL}/oauth/token`, {
+    const tokenRes = await fetch(`${AUTH_INTERNAL_URL}/oauth/token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
