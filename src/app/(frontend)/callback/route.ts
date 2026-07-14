@@ -54,9 +54,15 @@ export async function GET(req: Request) {
     });
 
     // Redirect back to original page or home
-    return NextResponse.redirect(`${APP_URL}${state || '/'}`);
+    const response = NextResponse.redirect(`${APP_URL}${state || '/'}`);
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+    return response;
   } catch (err: any) {
     console.error('OAuth token exchange error:', err);
-    return NextResponse.redirect(`${APP_URL}/?error=auth_failed`);
+    const errResponse = NextResponse.redirect(`${APP_URL}/?error=auth_failed`);
+    errResponse.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    return errResponse;
   }
 }
