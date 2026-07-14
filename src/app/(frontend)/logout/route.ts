@@ -4,14 +4,8 @@ import { cookies } from 'next/headers';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
-  console.log('[LOGOUT] Route hit. URL:', req.url);
-  console.log('[LOGOUT] Cookies received from browser:', req.headers.get('cookie'));
-  
   const referer = req.headers.get('referer');
-  console.log('[LOGOUT] Referer:', referer);
-  
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3003';
-  console.log('[LOGOUT] APP_URL:', APP_URL);
   
   const redirectUrl = referer && referer.startsWith(APP_URL) ? referer : `${APP_URL}/`;
   
@@ -51,8 +45,6 @@ export async function GET(req: Request) {
   response.headers.append('Set-Cookie', baseCookie);
   response.headers.append('Set-Cookie', `${baseCookie} Domain=showcase.codechovui.dev;`);
   response.headers.append('Set-Cookie', `${baseCookie} Domain=.codechovui.dev;`);
-  
-  console.log('[LOGOUT] Emitting 200 OK with meta refresh and multiple Set-Cookie headers for deletion');
   
   return response;
 }

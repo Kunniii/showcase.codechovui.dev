@@ -9,8 +9,6 @@ export async function GET(req: Request) {
   const error = url.searchParams.get('error');
   const state = url.searchParams.get('state');
 
-  console.log('[CALLBACK] Route hit. code:', code ? 'present' : 'missing', 'state:', state, 'error:', error);
-
   const AUTH_URL = process.env.CODECHOVUI_AUTH_URL || 'https://auth.codechovui.dev';
   const AUTH_INTERNAL_URL = process.env.CODECHOVUI_AUTH_INTERNAL_URL || AUTH_URL;
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3003';
@@ -40,8 +38,6 @@ export async function GET(req: Request) {
     });
 
     const tokenData = await tokenRes.json();
-    console.log('[CALLBACK] tokenRes status:', tokenRes.status);
-    console.log('[CALLBACK] tokenData keys:', Object.keys(tokenData));
 
     if (!tokenRes.ok) {
       throw new Error(tokenData.error || 'Failed to fetch access token');
@@ -51,7 +47,6 @@ export async function GET(req: Request) {
     const response = NextResponse.redirect(`${APP_URL}${state || '/'}`);
     
     // Set cookie directly on the response object
-    console.log('[CALLBACK] Setting auth_token cookie. maxAge:', tokenData.expires_in || 7200, 'secure:', process.env.NODE_ENV === 'production');
     response.cookies.set('auth_token', tokenData.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

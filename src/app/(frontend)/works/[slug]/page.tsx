@@ -39,23 +39,18 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
   const cookieStore = await cookies()
   const token = cookieStore.get('auth_token')?.value
   
-  console.log(`[PAGE ${slug}] auth_token in cookies:`, token ? `PRESENT (${token.substring(0,10)}...)` : 'MISSING')
-  
   let currentUser = null
   if (token) {
     try {
       const authUrl = process.env.CODECHOVUI_AUTH_URL || 'https://auth.codechovui.dev'
       const authInternalUrl = process.env.CODECHOVUI_AUTH_INTERNAL_URL || authUrl
       
-      console.log(`[PAGE ${slug}] Fetching user profile from: ${authInternalUrl}/api/me`)
       const userRes = await fetch(`${authInternalUrl}/api/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
         },
         cache: 'no-store'
       })
-      
-      console.log(`[PAGE ${slug}] userRes status:`, userRes.status, 'ok:', userRes.ok)
       
       if (userRes.ok) {
         const userData = await userRes.json()
