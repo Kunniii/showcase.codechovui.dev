@@ -18,22 +18,22 @@ export const Media: CollectionConfig = {
               if (exifData) {
                 // Ensure exif group exists
                 data.exif = data.exif || {}
-                
+
                 // Camera
                 if (exifData.Make || exifData.Model) {
                   data.exif.camera = [exifData.Make, exifData.Model].filter(Boolean).join(' ')
                 }
-                
+
                 // Lens
                 if (exifData.LensModel) {
                   data.exif.lens = exifData.LensModel
                 }
-                
+
                 // Aperture
                 if (exifData.FNumber) {
                   data.exif.aperture = `f/${exifData.FNumber}`
                 }
-                
+
                 // Shutter Speed
                 if (exifData.ExposureTime) {
                   if (exifData.ExposureTime < 1) {
@@ -42,12 +42,12 @@ export const Media: CollectionConfig = {
                     data.exif.shutterSpeed = `${exifData.ExposureTime}s`
                   }
                 }
-                
+
                 // ISO
                 if (exifData.ISO) {
                   data.exif.iso = exifData.ISO.toString()
                 }
-                
+
                 // Focal Length
                 if (exifData.FocalLength) {
                   data.exif.focalLength = `${exifData.FocalLength}mm`
@@ -59,8 +59,8 @@ export const Media: CollectionConfig = {
           }
         }
         return data
-      }
-    ]
+      },
+    ],
   },
   fields: [
     {

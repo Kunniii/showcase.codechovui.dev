@@ -6,15 +6,15 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 
 export type FormState = {
-  success?: boolean;
-  error?: string;
+  success?: boolean
+  error?: string
 }
 
 export async function submitComment(prevState: FormState, formData: FormData): Promise<FormState> {
   const content = formData.get('content') as string
   const workId = formData.get('workId') as string
   const slug = formData.get('slug') as string
-  
+
   if (!content || !content.trim() || !workId) {
     return { error: 'Nội dung bình luận không được để trống.' }
   }
@@ -29,12 +29,12 @@ export async function submitComment(prevState: FormState, formData: FormData): P
 
   // 2. Validate token and get user profile by calling auth.codechovui.dev
   try {
-    const authUrl = process.env.CODECHOVUI_AUTH_URL || 'https://auth.codechovui.dev';
-    const authInternalUrl = process.env.CODECHOVUI_AUTH_INTERNAL_URL || authUrl;
+    const authUrl = process.env.CODECHOVUI_AUTH_URL || 'https://auth.codechovui.dev'
+    const authInternalUrl = process.env.CODECHOVUI_AUTH_INTERNAL_URL || authUrl
     const response = await fetch(`${authInternalUrl}/api/me`, {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
 
     if (!response.ok) {
@@ -42,18 +42,19 @@ export async function submitComment(prevState: FormState, formData: FormData): P
     }
 
     const userData = await response.json()
-    const userName = userData.user?.profile?.display_name || userData.user?.username || 'Anonymous User'
+    const userName =
+      userData.user?.profile?.display_name || userData.user?.username || 'Anonymous User'
     const userEmail = userData.user?.profile?.email || 'unknown@email.com'
     const userAvatarType = userData.user?.profile?.avatar_type || null
     const userAvatarData = userData.user?.profile?.avatar_data || null
 
     // 3. Save the comment securely to Payload CMS
     const payload = await getPayload({ config: configPromise })
-    
+
     await payload.create({
       collection: 'comments',
       data: {
-        work: parseInt(workId, 10) || workId as any, // ID type depends on SQLite adapter (usually numerical ID)
+        work: parseInt(workId, 10) || (workId as any), // ID type depends on SQLite adapter (usually numerical ID)
         content: content.trim(),
         userName: userName,
         userEmail: userEmail,
@@ -64,7 +65,7 @@ export async function submitComment(prevState: FormState, formData: FormData): P
 
     // 4. Revalidate the page to show new comment immediately
     revalidatePath(`/works/${slug}`)
-    
+
     return { success: true }
   } catch (error) {
     console.error('Submit comment error:', error)

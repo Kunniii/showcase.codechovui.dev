@@ -9,11 +9,11 @@ services:
       - ./data:/app/data
       - ./media:/app/media
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.showcase-codechovui.rule=Host(`showcase.codechovui.dev`)"
-      - "traefik.http.routers.showcase-codechovui.entrypoints=websecure"
-      - "traefik.http.routers.showcase-codechovui.tls.certresolver=myresolver"
-      - "traefik.http.services.showcase-codechovui.loadbalancer.server.port=3000"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.showcase-codechovui.rule=Host(`showcase.codechovui.dev`)'
+      - 'traefik.http.routers.showcase-codechovui.entrypoints=websecure'
+      - 'traefik.http.routers.showcase-codechovui.tls.certresolver=myresolver'
+      - 'traefik.http.services.showcase-codechovui.loadbalancer.server.port=3003'
     networks:
       - traefik_default
     restart: unless-stopped

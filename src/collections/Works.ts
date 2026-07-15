@@ -11,7 +11,7 @@ export const Works: CollectionConfig = {
   },
   hooks: {
     beforeChange: [
-      ({ data, operation }) => {
+      ({ data }) => {
         if (data.title && !data.slug) {
           data.slug = data.title
             .toLowerCase()

@@ -59,7 +59,7 @@ describe('API', () => {
           content: 'Test comment content',
         },
         overrideAccess: false,
-      })
+      }),
     ).rejects.toThrow()
 
     // 4. Test Create comment with user (should succeed)
@@ -86,7 +86,7 @@ describe('API', () => {
           content: 'Updated comment content',
         },
         overrideAccess: false,
-      })
+      }),
     ).rejects.toThrow()
 
     // 6. Test Update comment with user (should succeed)
@@ -107,7 +107,7 @@ describe('API', () => {
         collection: 'comments',
         id: comment.id,
         overrideAccess: false,
-      })
+      }),
     ).rejects.toThrow()
 
     // 8. Test Delete comment with user (should succeed)
@@ -130,4 +130,3 @@ describe('API', () => {
     })
   })
 })
-
