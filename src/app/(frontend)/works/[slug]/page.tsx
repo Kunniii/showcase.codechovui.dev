@@ -10,7 +10,7 @@ import FloatingComments from '../../components/FloatingComments'
 import { Metadata } from 'next'
 
 interface Media {
-  id: string
+  id: string | number
   url?: string
   alt?: string
   width?: number
@@ -187,7 +187,8 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
 
         {gallery.length > 0 && (
           <div className="columns-1 sm:columns-2 gap-8 sm:gap-10 mb-16 sm:mb-24 mt-8">
-            {gallery.map((mediaItem: Media, i: number) => {
+            {gallery.map((item, i: number) => {
+              const mediaItem = item as Media
               const gImageUrl = mediaItem?.url
               const gImageAlt = mediaItem?.alt || `${work.title} gallery image ${i + 1}`
 
