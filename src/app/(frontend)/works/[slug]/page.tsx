@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { cookies } from 'next/headers'
 import FloatingComments from '../../components/FloatingComments'
+import { Metadata } from 'next'
 
 interface Media {
   id: string
@@ -17,6 +18,49 @@ interface Media {
   exif?: Record<string, unknown>
 }
 export const dynamic = 'force-dynamic'
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const payload = await getPayload({ config: configPromise })
+
+  const { docs } = await payload.find({
+    collection: 'works',
+    where: { slug: { equals: slug } },
+    depth: 1,
+  })
+
+  const work = docs[0]
+  if (!work) return {}
+
+  const imageUrl = (work.showcaseImage as Media)?.url || '/og-image.png'
+  const description = work.category 
+    ? `Xem tác phẩm ${work.title} thuộc thể loại ${work.category}.` 
+    : 'Xem tác phẩm mới trên Showcase.'
+
+  return {
+    title: work.title,
+    description,
+    openGraph: {
+      title: `${work.title} | Showcase`,
+      description,
+      url: `/works/${slug}`,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: work.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${work.title} | Showcase`,
+      description,
+      images: [imageUrl],
+    },
+  }
+}
 
 export default async function WorkDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params

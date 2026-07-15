@@ -1,9 +1,20 @@
 import React from 'react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { Metadata } from 'next'
 import WorksGallery from './components/WorksGallery'
 
 export const dynamic = 'force-dynamic'
+
+export const metadata: Metadata = {
+  title: 'Trang chủ',
+  description: 'Góc lưu trữ những tác phẩm cá nhân và linh tinh khác.',
+  openGraph: {
+    title: 'Trang chủ | Showcase',
+    description: 'Góc lưu trữ những tác phẩm cá nhân và linh tinh khác.',
+    url: '/',
+  },
+}
 
 export default async function Page() {
   const payload = await getPayload({ config: configPromise })

@@ -3,12 +3,18 @@ import Link from 'next/link'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
+import { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata = {
-  title: 'Mình là ai? - Showcase',
+export const metadata: Metadata = {
+  title: 'Mình là ai?',
   description: 'Góc nhỏ chia sẻ về bản thân.',
+  openGraph: {
+    title: 'Mình là ai? | Showcase',
+    description: 'Góc nhỏ chia sẻ về bản thân.',
+    url: '/about',
+  },
 }
 
 export default async function AboutPage() {
